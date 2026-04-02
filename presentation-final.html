@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undecided — Final Review 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --ink: #f5f0e8;
+  --mid: #666666;
+  --faint: #111111;
+  --rule: #222222;
+  --accent: #f5f0e8;
+  --red: #f5f0e8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  cursor: crosshair;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: #0a0a0a;
+  border-bottom: 1px solid var(--rule);
+  padding: 0 40px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: #f5f0e8; }
+
+/* ── LAYOUT ── */
+main { padding-top: 44px; }
+
+section {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.section-label {
+  display: none;
+}
+
+h1 {
+  font-size: clamp(38px, 6vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  color: #f5f0e8;
+}
+h1 em { font-style: italic; }
+h2 {
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  color: #f5f0e8;
+}
+p { margin-bottom: 16px; color: #c8c2b6; }
+p:last-child { margin-bottom: 0; }
+
+.meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  line-height: 2;
+}
+
+blockquote {
+  border-left: 1px solid #f5f0e8;
+  padding-left: 24px;
+  margin: 32px 0;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.5;
+  color: #f5f0e8;
+}
+
+.drawing {
+  width: 100%;
+  display: block;
+  margin: 40px 0;
+}
+.drawing-caption {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: -28px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+/* ── COVER ── */
+#cover {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  min-height: calc(100vh - 44px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ── CONTROLS ── */
+.toggle-row {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border: 1px solid var(--rule);
+  width: fit-content;
+}
+.toggle-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 1px solid var(--rule);
+}
+.toggle-btn:last-child { border-right: none; }
+.toggle-btn.active { background: #f5f0e8; color: #000; }
+
+.tab-view { display: none; }
+.tab-view.active { display: block; }
+
+/* ── BEFORE/AFTER SLIDER ── */
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+  cursor: col-resize;
+  margin: 32px 0;
+  border: 1px solid var(--rule);
+  user-select: none;
+}
+.slider-before, .slider-after {
+  position: absolute;
+  inset: 0; width: 100%; height: 100%;
+}
+.slider-after { clip-path: inset(0 50% 0 0); }
+.slider-divider {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 1px;
+  background: #fff;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+.slider-handle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px; height: 28px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 11;
+  color: #000;
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.slider-label {
+  position: absolute;
+  bottom: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 8px;
+  z-index: 5;
+}
+.slider-label.left { left: 10px; }
+.slider-label.right { right: 10px; }
+
+/* ── CATALOGUE ── */
+.catalogue-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 32px 0;
+}
+.catalogue-item {
+  background: #000;
+  padding: 20px 12px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.catalogue-item:hover { background: var(--faint); }
+.catalogue-item.expanded { background: var(--faint); }
+.catalogue-item svg { display: block; margin: 0 auto 10px; }
+.catalogue-item-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-align: center;
+  line-height: 1.4;
+}
+.catalogue-detail {
+  display: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  color: #aaa;
+  line-height: 1.6;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+}
+.catalogue-item.expanded .catalogue-detail { display: block; }
+
+/* ── LIGHTBOX ── */
+.lightbox-trigger {
+  cursor: zoom-in;
+  position: relative;
+  display: block;
+}
+.lightbox-trigger::after {
+  content: '⊕';
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: 14px;
+  color: var(--mid);
+  font-family: 'IBM Plex Mono', monospace;
+  transition: color 0.2s;
+}
+.lightbox-trigger:hover::after { color: #fff; }
+
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+#lightbox.open { display: flex; }
+#lightbox svg, #lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+}
+#lightbox-close {
+  position: absolute;
+  top: 20px; right: 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mid);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+#lightbox-close:hover { color: #fff; }
+#lightbox-caption {
+  position: absolute;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mid);
+  white-space: nowrap;
+}
+
+/* ── HOTSPOTS ── */
+.floorplan-wrap { position: relative; margin: 32px 0; }
+.hotspot {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #000;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  z-index: 10;
+  transition: transform 0.2s;
+}
+.hotspot:hover { transform: scale(1.3); }
+.hotspot-tooltip {
+  position: absolute;
+  background: #fff;
+  color: #000;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: 5px 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 20;
+  top: -32px; left: 50%;
+  transform: translateX(-50%);
+}
+.hotspot:hover .hotspot-tooltip { opacity: 1; }
+
+/* ── DEVICE COMPARISON ── */
+.device-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 32px 0;
+}
+.device-compare-item {
+  background: #000;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 2px solid transparent;
+}
+.device-compare-item:hover { background: #0a0a0a; }
+.device-compare-item.selected { border-bottom-color: #fff; background: #0a0a0a; }
+.device-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: 14px;
+}
+.device-detail-panel {
+  border: 1px solid var(--rule);
+  border-top: none;
+  padding: 24px;
+  display: none;
+  background: #050505;
+}
+.device-detail-panel.open { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.device-detail-panel p { font-size: 14px; color: #aaa; }
+.device-detail-panel h3 { font-size: 16px; color: #fff; margin-bottom: 8px; font-weight: 400; }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 32px; margin: 32px 0; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 1px;
+  background: var(--rule);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.timeline-item.visible { opacity: 1; transform: translateX(0); }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -36px; top: 8px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #333;
+  border: 1px solid #444;
+}
+.timeline-item.now::before { background: #fff; border-color: #fff; }
+.timeline-year {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--mid);
+  margin-bottom: 4px;
+}
+.timeline-item.now .timeline-year { color: #fff; }
+.timeline-event { font-size: 16px; line-height: 1.4; color: #ccc; }
+
+/* ── SCROLL-DRAW ANIMATIONS ── */
+.draw-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  transition: stroke-dashoffset 2s ease;
+}
+.draw-path.drawn { stroke-dashoffset: 0; }
+
+/* ── CONTAMINATION SPREAD ── */
+.contam-ring {
+  r: 0;
+  opacity: 0;
+  transition: r 1.5s ease-out, opacity 0.3s;
+}
+.contam-ring.spread { opacity: 0.15; }
+
+/* ── FADE IN ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ── SVG BASE COLORS ── */
+.svg-stroke { stroke: #fff; }
+.svg-stroke-mid { stroke: #444; }
+.svg-text { fill: #666; }
+.svg-text-white { fill: #fff; }
+.svg-fill-faint { fill: rgba(255,255,255,0.04); }
+.svg-red-stroke { stroke: #888; }
+
+/* ── BOLD STROKES ── */
+svg line, svg rect, svg path, svg ellipse, svg circle, svg polyline { stroke-width: 1.5; }
+
+/* ── BOLD STROKES already applied ── */
+/* divider styles */
+body.div-dashed section { border-bottom-style: dashed; }
+body.div-dotted section { border-bottom-style: dotted; }
+body.div-none section { border-bottom: none; }
+body.div-solid section { border-bottom-style: solid; }
+
+/* bg */
+body.bg-offblack { background: #0a0a0a !important; --bg: #0a0a0a; }
+body.bg-offblack nav { background: #0a0a0a !important; }
+body.bg-warm { background: #0d0b08 !important; --bg: #0d0b08; }
+body.bg-warm nav { background: #0d0b08 !important; }
+
+/* text */
+body.ink-warm h1, body.ink-warm h2, body.ink-warm p, body.ink-warm blockquote,
+body.ink-warm .nav-links a:hover, body.ink-warm .nav-links a.active { color: #f5f0e8; }
+body.ink-grey h1, body.ink-grey h2 { color: #d0d0d0; }
+body.ink-grey p { color: #aaa; }
+
+/* font */
+body.font-mono { font-family: 'IBM Plex Mono', monospace !important; font-size: 14px !important; }
+body.font-mono h1, body.font-mono h2 { font-family: 'IBM Plex Mono', monospace; font-weight: 400; }
+body.font-mix h1, body.font-mix h2 { font-family: 'EB Garamond', serif; }
+body.font-mix p, body.font-mix .meta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+
+/* nav */
+body.nav-hidden nav { display: none; }
+body.nav-hidden main { padding-top: 0; }
+body.nav-dot nav .nav-links { display: none; }
+body.nav-dot nav .nav-title { display: none; }
+body.nav-dot nav { justify-content: center; background: transparent; border: none; }
+
+/* stroke weight */
+body.stroke-hair svg line, body.stroke-hair svg rect, body.stroke-hair svg path,
+body.stroke-hair svg ellipse, body.stroke-hair svg circle, body.stroke-hair svg polyline { stroke-width: 0.4 !important; }
+body.stroke-bold svg line, body.stroke-bold svg rect, body.stroke-bold svg path,
+body.stroke-bold svg ellipse, body.stroke-bold svg circle, body.stroke-bold svg polyline { stroke-width: 1.6 !important; }
+
+/* section label */
+body.label-serif .section-label { font-family: 'EB Garamond', serif; font-style: italic; text-transform: none; font-size: 13px; letter-spacing: 0; }
+body.label-none .section-label { display: none; }
+
+/* spacing */
+body.space-tight section { padding: 40px 40px; }
+body.space-airy section { padding: 120px 40px; }
+
+/* cursor */
+body.cur-cross, body.cur-cross * { cursor: crosshair !important; }
+body.cur-none, body.cur-none * { cursor: none !important; }
+
+/* caption alignment */
+body.cap-left .drawing-caption { text-align: left; }
+body.cap-center .drawing-caption { text-align: center; }
+
+/* ── ANIMATED STEAM ── */
+@keyframes rise {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.4; }
+  100% { transform: translateY(-50px) scaleX(0.5); opacity: 0; }
+}
+.steam { animation: rise 3s ease-in infinite; }
+.steam-2 { animation: rise 3s ease-in 1s infinite; }
+.steam-3 { animation: rise 3s ease-in 2s infinite; }
+
+/* animated pipe flow */
+@keyframes flow {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+.pipe-flow { stroke-dasharray: 8 4; animation: flow 1.5s linear infinite; }
+.pipe-flow-slow { stroke-dasharray: 8 4; animation: flow 3s linear infinite; }
+
+@keyframes pulse-r {
+  0% { r: 4; opacity: 0.5; }
+  100% { r: 70; opacity: 0; }
+}
+.pulse-ring { animation: pulse-r 4s ease-out infinite; }
+.pulse-ring-2 { animation: pulse-r 4s ease-out 1.5s infinite; }
+.pulse-ring-3 { animation: pulse-r 4s ease-out 3s infinite; }
+</style>
+</head>
+<body>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">Close ✕</button>
+  <div id="lightbox-content"></div>
+  <div id="lightbox-caption"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-title">Undecided</span>
+  <ul class="nav-links">
+    <li><a href="#cover">Cover</a></li>
+    <li><a href="#narrative">Narrative</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#masterplan">Master Plan</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#fabrication">Fabrication</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ══════════════ COVER ══════════════ -->
+<section id="cover">
+  <div class="section-label">Final Review · 2026</div>
+  <h1><em>Undecided</em></h1>
+
+  <div class="lightbox-trigger" onclick="openLightbox('cover-svg', 'Fig. 01 — Site section, existing condition')" data-caption="Fig. 01 — Site section, existing condition">
+    <svg id="cover-svg" class="drawing" height="300" viewBox="0 0 620 300">
+      <!-- Ground -->
+      <line x1="0" y1="230" x2="620" y2="230" stroke="#333" stroke-width="1"/>
+      <!-- Subsurface -->
+      <line x1="0" y1="260" x2="620" y2="260" stroke="#222" stroke-width="0.5" stroke-dasharray="5 4"/>
+
+      <!-- Contamination plume underground -->
+      <ellipse cx="195" cy="248" rx="110" ry="22" fill="#fff" opacity="0.04"/>
+      <circle cx="195" cy="230" r="4" fill="#fff" opacity="0.3" class="pulse-ring"/>
+      <circle cx="195" cy="230" r="4" fill="#fff" opacity="0.2" class="pulse-ring-2"/>
+      <circle cx="195" cy="230" r="4" fill="#fff" opacity="0.15" class="pulse-ring-3"/>
+
+      <!-- Distillation tower -->
+      <rect x="155" y="90" width="24" height="140" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <line x1="155" y1="100" x2="179" y2="100" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="110" x2="179" y2="110" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="120" x2="179" y2="120" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="130" x2="179" y2="130" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="140" x2="179" y2="140" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="150" x2="179" y2="150" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="160" x2="179" y2="160" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <line x1="155" y1="170" x2="179" y2="170" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+      <ellipse cx="167" cy="83" rx="4" ry="7" fill="#fff" opacity="0.04" class="steam"/>
+      <ellipse cx="161" cy="78" rx="3" ry="5" fill="#fff" opacity="0.04" class="steam-2"/>
+      <ellipse cx="173" cy="76" rx="3" ry="5" fill="#fff" opacity="0.03" class="steam-3"/>
+
+      <!-- Pipe rack -->
+      <line x1="220" y1="185" x2="310" y2="185" stroke="#fff" stroke-width="1.2"/>
+      <line x1="220" y1="192" x2="310" y2="192" stroke="#fff" stroke-width="1.2"/>
+      <line x1="220" y1="199" x2="310" y2="199" stroke="#fff" stroke-width="1.2"/>
+      <line x1="220" y1="185" x2="220" y2="230" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+      <line x1="255" y1="185" x2="255" y2="230" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+      <line x1="290" y1="185" x2="290" y2="230" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+      <line x1="220" y1="185" x2="310" y2="185" stroke="#fff" stroke-width="0.8" opacity="0.5" class="pipe-flow"/>
+
+      <!-- Storage tanks -->
+      <rect x="315" y="170" width="48" height="60" rx="2" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <ellipse cx="339" cy="170" rx="24" ry="6" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <rect x="375" y="178" width="38" height="52" rx="2" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <ellipse cx="394" cy="178" rx="19" ry="5" fill="none" stroke="#fff" stroke-width="0.8"/>
+
+      <!-- Cracker -->
+      <rect x="450" y="110" width="34" height="120" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <rect x="460" y="60" width="12" height="53" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <ellipse cx="466" cy="60" rx="10" ry="3" fill="none" stroke="#fff" stroke-width="0.6"/>
+      <ellipse cx="466" cy="52" rx="4" ry="6" fill="#fff" opacity="0.04" class="steam-3"/>
+
+      <!-- Remediation planting (right) -->
+      <line x1="540" y1="230" x2="540" y2="200" stroke="#fff" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="540" cy="196" rx="10" ry="7" fill="none" stroke="#fff" stroke-width="0.7" opacity="0.5"/>
+      <line x1="558" y1="230" x2="558" y2="204" stroke="#fff" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="558" cy="200" rx="9" ry="6" fill="none" stroke="#fff" stroke-width="0.7" opacity="0.5"/>
+      <line x1="576" y1="230" x2="576" y2="202" stroke="#fff" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="576" cy="198" rx="10" ry="7" fill="none" stroke="#fff" stroke-width="0.7" opacity="0.5"/>
+      <line x1="594" y1="230" x2="594" y2="206" stroke="#fff" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="594" cy="202" rx="8" ry="6" fill="none" stroke="#fff" stroke-width="0.7" opacity="0.5"/>
+
+      <!-- Labels -->
+      <text x="167" y="272" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="1">DISTILLATION</text>
+      <text x="265" y="272" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="1">PIPE RACK</text>
+      <text x="355" y="272" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="1">STORAGE</text>
+      <text x="467" y="272" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="1">CRACKER</text>
+      <text x="570" y="272" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#888" letter-spacing="1">REMEDIATION</text>
+    </svg>
+  </div>
+  <div class="drawing-caption">Fig. 01 — Site section, existing condition · tap to enlarge</div>
+
+  <div class="meta">
+    Nabil Davidson &amp; Zirui<br>
+    Oil Refinery Remediation Studio · 2026–2066
+  </div>
+</section>
+
+<!-- ══════════════ NARRATIVE ══════════════ -->
+<section id="narrative" class="fade-in">
+  <div class="section-label">Project Narrative</div>
+  <h2>What does it mean to design for a landscape that is already toxic?</h2>
+  <p>This project begins with a simple observation: the oil refinery is not disappearing. It is transitioning. As fossil fuel infrastructure enters a period of accelerated decommissioning, vast acreages of contaminated industrial land require new frameworks — not just for cleanup, but for inhabitation, research, and public life.</p>
+  <blockquote>"Remediation is not the erasure of the industrial past. It is a new form of stewardship."</blockquote>
+  <p>The project proposes three overlapping conditions across a forty-year horizon: the contamination state (2026), the active remediation state (2040), and the emergent civic condition (2066). These are not sequential phases but simultaneous agencies operating on the same site.</p>
+  <p>Architecture enters not as monument but as instrument — devices that monitor, filter, and expose the slow processes of ecological recovery, while opening the site to a public long excluded from its operation.</p>
+
+  <!-- scroll-draw diagram -->
+  <svg class="drawing" id="narrative-diagram" height="110" viewBox="0 0 600 110">
+    <rect x="0" y="25" width="170" height="60" fill="none" stroke="#333" stroke-width="1"/>
+    <text x="85" y="52" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#fff" letter-spacing="1">2026</text>
+    <text x="85" y="67" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">CONTAMINATION</text>
+    <line x1="170" y1="55" x2="213" y2="55" stroke="#333" stroke-width="1" class="draw-path"/>
+    <polyline points="208,50 215,55 208,60" fill="none" stroke="#333" stroke-width="1"/>
+    <rect x="215" y="25" width="170" height="60" fill="none" stroke="#333" stroke-width="1"/>
+    <text x="300" y="52" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#fff" letter-spacing="1">2040</text>
+    <text x="300" y="67" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">REMEDIATION</text>
+    <line x1="385" y1="55" x2="428" y2="55" stroke="#333" stroke-width="1" class="draw-path"/>
+    <polyline points="423,50 430,55 423,60" fill="none" stroke="#333" stroke-width="1"/>
+    <rect x="430" y="25" width="170" height="60" fill="none" stroke="#333" stroke-width="1"/>
+    <text x="515" y="52" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#fff" letter-spacing="1">2066</text>
+    <text x="515" y="67" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">CIVIC EMERGENCE</text>
+  </svg>
+  <div class="drawing-caption">Fig. 02 — Three temporal conditions</div>
+</section>
+
+<!-- ══════════════ RESEARCH ══════════════ -->
+<section id="research" class="fade-in">
+  <div class="section-label">Maps &amp; Research</div>
+  <h2>Global Oil Infrastructure</h2>
+  <p>Two world maps trace the trajectory of oil dependency — the current state of import/export flows and contamination corridors, and a projected condition forty years forward.</p>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" onclick="switchTab(this,'map','map-2026')">2026</button>
+    <button class="toggle-btn" onclick="switchTab(this,'map','map-2066')">2066</button>
+  </div>
+
+  <div class="tab-view active" id="map-2026">
+    <div class="lightbox-trigger" onclick="openLightbox('map2026-svg','Fig. 03 — Global oil flows, 2026')">
+      <svg id="map2026-svg" class="drawing" height="300" viewBox="0 0 600 300">
+        <rect width="600" height="300" fill="#050505" stroke="#222" stroke-width="1"/>
+        <!-- Continents -->
+        <path d="M55 75 Q108 55 138 86 Q158 116 138 158 Q118 196 78 186 Q38 176 38 136 Q38 96 55 75Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M175 66 Q238 46 298 68 Q338 88 348 130 Q358 176 318 206 Q268 236 218 216 Q168 196 162 156 Q155 116 175 66Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M365 76 Q418 56 458 78 Q498 98 508 138 Q518 188 488 218 Q448 248 408 228 Q362 198 358 158 Q350 116 365 76Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M195 245 Q225 235 248 256 Q258 276 238 292 Q213 302 198 288 Q185 272 195 245Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <!-- Oil flows animated -->
+        <path d="M428 132 Q348 100 228 110 Q168 115 98 130" stroke="#fff" stroke-width="1.2" fill="none" opacity="0.4" class="pipe-flow"/>
+        <path d="M438 148 Q368 176 288 168 Q198 158 98 140" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.25" class="pipe-flow" style="animation-delay:1s"/>
+        <path d="M418 118 Q358 88 278 95 Q178 102 88 118" stroke="#fff" stroke-width="0.6" fill="none" opacity="0.2" class="pipe-flow" style="animation-delay:2s"/>
+        <!-- Hotspots -->
+        <circle cx="428" cy="138" r="4" fill="#fff" opacity="0.4" class="pulse-ring"/>
+        <circle cx="428" cy="138" r="4" fill="#fff" opacity="0.3" class="pulse-ring-2"/>
+        <circle cx="98" cy="128" r="4" fill="#fff" opacity="0.4" class="pulse-ring" style="animation-delay:1.5s"/>
+        <circle cx="238" cy="115" r="3" fill="#fff" opacity="0.35" class="pulse-ring-3"/>
+        <text x="300" y="290" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#444" letter-spacing="1">OIL IMPORT / EXPORT FLOWS · 2026</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="tab-view" id="map-2066">
+    <div class="lightbox-trigger" onclick="openLightbox('map2066-svg','Fig. 03b — Remediation network, 2066')">
+      <svg id="map2066-svg" class="drawing" height="300" viewBox="0 0 600 300">
+        <rect width="600" height="300" fill="#050505" stroke="#222" stroke-width="1"/>
+        <path d="M55 75 Q108 55 138 86 Q158 116 138 158 Q118 196 78 186 Q38 176 38 136 Q38 96 55 75Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M175 66 Q238 46 298 68 Q338 88 348 130 Q358 176 318 206 Q268 236 218 216 Q168 196 162 156 Q155 116 175 66Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M365 76 Q418 56 458 78 Q498 98 508 138 Q518 188 488 218 Q448 248 408 228 Q362 198 358 158 Q350 116 365 76Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <path d="M195 245 Q225 235 248 256 Q258 276 238 292 Q213 302 198 288 Q185 272 195 245Z" fill="#111" stroke="#333" stroke-width="0.5"/>
+        <!-- Reduced flows -->
+        <path d="M428 132 Q348 100 228 110" stroke="#fff" stroke-width="0.4" fill="none" opacity="0.15" stroke-dasharray="4 6"/>
+        <!-- Remediation nodes -->
+        <circle cx="428" cy="138" r="16" fill="#fff" opacity="0.04" stroke="#fff" stroke-width="0.5"/>
+        <circle cx="98" cy="128" r="12" fill="#fff" opacity="0.04" stroke="#fff" stroke-width="0.5"/>
+        <circle cx="238" cy="115" r="10" fill="#fff" opacity="0.04" stroke="#fff" stroke-width="0.5"/>
+        <!-- Network connections -->
+        <path d="M98 128 Q168 120 238 115 Q328 108 428 138" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.25" stroke-dasharray="5 4"/>
+        <text x="300" y="290" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#444" letter-spacing="1">REMEDIATION NETWORK · 2066</text>
+      </svg>
+    </div>
+  </div>
+  <div class="drawing-caption">Fig. 03 — Global map · toggle 2026/2066 · tap to enlarge</div>
+
+  <!-- BEFORE/AFTER SLIDER -->
+  <h2 style="margin-top:48px;">Site: Contamination vs. Remediation</h2>
+  <p>Drag to compare the existing contamination condition with the proposed 2066 site plan.</p>
+
+  <div class="slider-container" id="slider">
+    <!-- Before -->
+    <svg class="slider-before" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice">
+      <rect width="600" height="340" fill="#060606"/>
+      <rect x="30" y="20" width="540" height="300" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="5 3"/>
+      <!-- grid -->
+      <line x1="150" y1="20" x2="150" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="300" y1="20" x2="300" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="450" y1="20" x2="450" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="30" y1="120" x2="570" y2="120" stroke="#111" stroke-width="0.5"/>
+      <line x1="30" y1="220" x2="570" y2="220" stroke="#111" stroke-width="0.5"/>
+      <!-- Contamination -->
+      <ellipse cx="195" cy="205" rx="135" ry="85" fill="#fff" opacity="0.04"/>
+      <ellipse cx="195" cy="205" rx="105" ry="65" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.2"/>
+      <ellipse cx="195" cy="205" rx="75" ry="45" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.3"/>
+      <ellipse cx="195" cy="205" rx="45" ry="25" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+      <ellipse cx="365" cy="170" rx="90" ry="65" fill="#fff" opacity="0.03"/>
+      <!-- Buildings -->
+      <rect x="150" y="150" width="34" height="22" fill="#fff" opacity="0.08" stroke="#fff" stroke-width="0.4"/>
+      <rect x="200" y="145" width="48" height="28" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+      <rect x="328" y="130" width="76" height="42" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+      <rect x="418" y="140" width="42" height="76" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+      <!-- Pipes -->
+      <line x1="184" y1="170" x2="328" y2="170" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+      <line x1="328" y1="170" x2="440" y2="175" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+      <text x="300" y="335" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="1">2026 — CONTAMINATION</text>
+    </svg>
+    <!-- After -->
+    <svg class="slider-after" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice">
+      <rect width="600" height="340" fill="#060606"/>
+      <rect x="30" y="20" width="540" height="300" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="5 3"/>
+      <line x1="150" y1="20" x2="150" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="300" y1="20" x2="300" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="450" y1="20" x2="450" y2="320" stroke="#111" stroke-width="0.5"/>
+      <line x1="30" y1="120" x2="570" y2="120" stroke="#111" stroke-width="0.5"/>
+      <line x1="30" y1="220" x2="570" y2="220" stroke="#111" stroke-width="0.5"/>
+      <!-- Remediation -->
+      <ellipse cx="195" cy="205" rx="135" ry="85" fill="#fff" opacity="0.03"/>
+      <ellipse cx="365" cy="170" rx="90" ry="65" fill="#fff" opacity="0.02"/>
+      <!-- New structures -->
+      <rect x="148" y="148" width="38" height="26" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <rect x="198" y="143" width="52" height="32" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <rect x="325" y="127" width="80" height="48" fill="none" stroke="#fff" stroke-width="0.8"/>
+      <!-- Planting -->
+      <circle cx="108" cy="220" r="5" fill="#fff" opacity="0.15"/>
+      <circle cx="128" cy="232" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="148" cy="222" r="6" fill="#fff" opacity="0.15"/>
+      <circle cx="420" cy="210" r="5" fill="#fff" opacity="0.15"/>
+      <circle cx="445" cy="198" r="6" fill="#fff" opacity="0.15"/>
+      <circle cx="468" cy="215" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="490" cy="205" r="5" fill="#fff" opacity="0.15"/>
+      <!-- Paths -->
+      <path d="M50 310 Q150 278 258 265 Q368 250 490 270 Q540 278 570 290" stroke="#fff" stroke-width="1.2" fill="none" opacity="0.3"/>
+      <path d="M168 330 Q188 290 198 210 Q208 135 215 55" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.2"/>
+      <text x="300" y="335" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#888" letter-spacing="1">2066 — REMEDIATION</text>
+    </svg>
+    <div class="slider-divider" id="divider"></div>
+    <div class="slider-handle" id="handle">⟺</div>
+    <span class="slider-label left">2026</span>
+    <span class="slider-label right">2066</span>
+  </div>
+  <div class="drawing-caption">Fig. 04 — Site plan · drag to compare</div>
+
+  <!-- POINT CLOUD CATALOGUE -->
+  <h2 style="margin-top:48px;">Point Cloud Catalogue</h2>
+  <p>Click any unit to expand notes. Eight refinery infrastructure typologies documented as wireframe studies.</p>
+
+  <div class="catalogue-grid">
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <rect x="26" y="12" width="20" height="68" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="26" y1="20" x2="46" y2="20" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="26" y1="28" x2="46" y2="28" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="26" y1="36" x2="46" y2="36" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="26" y1="44" x2="46" y2="44" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="26" y1="52" x2="46" y2="52" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="26" y1="60" x2="46" y2="60" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <ellipse cx="36" cy="7" rx="4" ry="5" fill="#fff" opacity="0.04" class="steam"/>
+      </svg>
+      <div class="catalogue-item-name">Distillation Tower</div>
+      <div class="catalogue-detail">Height: 40–60m<br>Function: Separates crude by boiling point<br>Hazard: VOC emissions, thermal</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <path d="M14 82 L22 18 Q36 8 50 18 L58 82 Z" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <path d="M18 82 Q36 77 54 82" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <path d="M22 64 Q36 60 50 64" fill="none" stroke="#fff" stroke-width="0.3" opacity="0.5"/>
+        <path d="M23 46 Q36 43 49 46" fill="none" stroke="#fff" stroke-width="0.3" opacity="0.5"/>
+        <ellipse cx="36" cy="11" rx="6" ry="4" fill="#fff" opacity="0.04" class="steam-2"/>
+      </svg>
+      <div class="catalogue-item-name">Cooling Tower</div>
+      <div class="catalogue-detail">Height: 20–45m<br>Function: Heat rejection via evaporation<br>Hazard: Legionella risk, thermal plume</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <rect x="22" y="36" width="28" height="46" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <rect x="31" y="12" width="10" height="26" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="12" rx="9" ry="3" fill="none" stroke="#fff" stroke-width="0.6"/>
+        <line x1="22" y1="52" x2="15" y2="52" stroke="#fff" stroke-width="0.7"/>
+        <line x1="50" y1="56" x2="57" y2="56" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="6" rx="3" ry="4" fill="#fff" opacity="0.04" class="steam-3"/>
+      </svg>
+      <div class="catalogue-item-name">Cracker Unit</div>
+      <div class="catalogue-detail">Height: 30–50m<br>Function: Breaks heavy hydrocarbons<br>Hazard: High-pressure, H2S release</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <ellipse cx="36" cy="40" rx="26" ry="7" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="10" y1="40" x2="10" y2="64" stroke="#fff" stroke-width="0.7"/>
+        <line x1="62" y1="40" x2="62" y2="64" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="64" rx="26" ry="7" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="36" y1="33" x2="36" y2="26" stroke="#fff" stroke-width="0.6"/>
+        <circle cx="36" cy="25" r="2" fill="#fff" opacity="0.5"/>
+      </svg>
+      <div class="catalogue-item-name">Storage Tank</div>
+      <div class="catalogue-detail">Diameter: 10–80m<br>Function: Crude and product storage<br>Hazard: Vapor emissions, fire risk</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <line x1="8" y1="36" x2="64" y2="36" stroke="#fff" stroke-width="0.9"/>
+        <line x1="8" y1="44" x2="64" y2="44" stroke="#fff" stroke-width="0.9"/>
+        <line x1="8" y1="52" x2="64" y2="52" stroke="#fff" stroke-width="0.7"/>
+        <line x1="18" y1="32" x2="18" y2="70" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+        <line x1="36" y1="32" x2="36" y2="70" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+        <line x1="54" y1="32" x2="54" y2="70" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+        <line x1="8" y1="36" x2="64" y2="36" stroke="#fff" stroke-width="0.7" opacity="0.4" class="pipe-flow"/>
+      </svg>
+      <div class="catalogue-item-name">Pipe Rack</div>
+      <div class="catalogue-detail">Span: 6–12m typical bays<br>Function: Route process pipework<br>Hazard: Leak points, seismic vulnerability</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <rect x="26" y="46" width="20" height="36" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <path d="M26 46 L30 18 L42 18 L46 46" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="18" rx="9" ry="3" fill="none" stroke="#fff" stroke-width="0.6"/>
+        <line x1="18" y1="60" x2="26" y2="60" stroke="#fff" stroke-width="0.7"/>
+        <line x1="46" y1="54" x2="54" y2="54" stroke="#fff" stroke-width="0.7"/>
+        <line x1="46" y1="66" x2="54" y2="66" stroke="#fff" stroke-width="0.7"/>
+      </svg>
+      <div class="catalogue-item-name">FCC Unit</div>
+      <div class="catalogue-detail">Height: 40–60m<br>Function: Fluid catalytic cracking<br>Hazard: Catalyst dust, CO release</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <ellipse cx="36" cy="52" rx="22" ry="26" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="24" rx="9" ry="10" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="27" y1="24" x2="14" y2="52" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="45" y1="24" x2="58" y2="52" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="36" y1="14" x2="36" y2="8" stroke="#fff" stroke-width="0.7"/>
+        <ellipse cx="36" cy="6" rx="3" ry="3" fill="#fff" opacity="0.04" class="steam"/>
+      </svg>
+      <div class="catalogue-item-name">Delayed Coker</div>
+      <div class="catalogue-detail">Height: 25–35m drums<br>Function: Converts residual oil to coke<br>Hazard: Coke dust, high temperature</div>
+    </div>
+    <div class="catalogue-item" onclick="toggleCatalogue(this)">
+      <svg width="72" height="88" viewBox="0 0 72 88">
+        <rect x="24" y="22" width="24" height="58" rx="12" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="24" y1="40" x2="48" y2="40" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="24" y1="52" x2="48" y2="52" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="24" y1="64" x2="48" y2="64" stroke="#fff" stroke-width="0.3" opacity="0.4"/>
+        <line x1="14" y1="48" x2="24" y2="48" stroke="#fff" stroke-width="0.7"/>
+        <line x1="48" y1="48" x2="58" y2="48" stroke="#fff" stroke-width="0.7"/>
+      </svg>
+      <div class="catalogue-item-name">Hydrocracker</div>
+      <div class="catalogue-detail">Height: 30–50m<br>Function: Hydrogen-assisted cracking<br>Hazard: High-pressure hydrogen, exothermic</div>
+    </div>
+  </div>
+  <div class="drawing-caption">Fig. 05 — Refinery unit typologies · click to expand</div>
+</section>
+
+<!-- ══════════════ MASTER PLAN ══════════════ -->
+<section id="masterplan" class="fade-in">
+  <div class="section-label">Master Plans</div>
+  <h2>Three Site Conditions</h2>
+  <p>Three overlapping master plans — each revealing a different temporal layer of the same ground. The contamination spread is scroll-triggered on the first view.</p>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" onclick="switchTab(this,'plan','plan-contamination')">Contamination</button>
+    <button class="toggle-btn" onclick="switchTab(this,'plan','plan-remediation')">Remediation</button>
+    <button class="toggle-btn" onclick="switchTab(this,'plan','plan-2066')">2066</button>
+  </div>
+
+  <div class="tab-view active" id="plan-contamination">
+    <div class="lightbox-trigger" onclick="openLightbox('plan-contam-svg','Fig. 06 — Contamination master plan, 2026')">
+      <svg id="plan-contam-svg" class="drawing" height="380" viewBox="0 0 600 380">
+        <rect width="600" height="380" fill="#040404" stroke="#1a1a1a" stroke-width="1"/>
+        <!-- grid -->
+        <line x1="0" y1="76" x2="600" y2="76" stroke="#111" stroke-width="0.4"/><line x1="0" y1="152" x2="600" y2="152" stroke="#111" stroke-width="0.4"/><line x1="0" y1="228" x2="600" y2="228" stroke="#111" stroke-width="0.4"/><line x1="0" y1="304" x2="600" y2="304" stroke="#111" stroke-width="0.4"/>
+        <line x1="100" y1="0" x2="100" y2="380" stroke="#111" stroke-width="0.4"/><line x1="200" y1="0" x2="200" y2="380" stroke="#111" stroke-width="0.4"/><line x1="300" y1="0" x2="300" y2="380" stroke="#111" stroke-width="0.4"/><line x1="400" y1="0" x2="400" y2="380" stroke="#111" stroke-width="0.4"/><line x1="500" y1="0" x2="500" y2="380" stroke="#111" stroke-width="0.4"/>
+        <!-- Contamination (animated on scroll) -->
+        <ellipse id="cz1" cx="180" cy="215" rx="0" ry="0" fill="#fff" opacity="0.07" class="contam-ring"/>
+        <ellipse id="cz2" cx="370" cy="178" rx="0" ry="0" fill="#fff" opacity="0.05" class="contam-ring"/>
+        <ellipse id="cz3" cx="448" cy="298" rx="0" ry="0" fill="#fff" opacity="0.05" class="contam-ring"/>
+        <!-- Contours -->
+        <ellipse cx="180" cy="215" rx="108" ry="68" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.2"/>
+        <ellipse cx="180" cy="215" rx="76" ry="48" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.3"/>
+        <ellipse cx="180" cy="215" rx="46" ry="28" fill="none" stroke="#fff" stroke-width="0.4" opacity="0.45"/>
+        <!-- Buildings -->
+        <rect x="118" y="157" width="34" height="22" fill="#fff" opacity="0.08" stroke="#fff" stroke-width="0.4"/>
+        <rect x="172" y="152" width="48" height="28" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+        <rect x="336" y="136" width="78" height="44" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+        <rect x="426" y="142" width="44" height="78" fill="#fff" opacity="0.07" stroke="#fff" stroke-width="0.4"/>
+        <line x1="0" y1="268" x2="600" y2="268" stroke="#fff" stroke-width="0.6" opacity="0.12"/>
+        <line x1="298" y1="0" x2="298" y2="380" stroke="#fff" stroke-width="0.6" opacity="0.12"/>
+        <text x="180" y="310" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.8">PRIMARY PLUME</text>
+        <text x="8" y="374" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#444" letter-spacing="0.5">N↑ · 1:2000 · CONTAMINATION 2026</text>
+      </svg>
+    </div>
+    <p style="margin-top: 16px;">Primary contamination plume extends from historic tank farm. Secondary zones associated with cracking units and process areas.</p>
+  </div>
+
+  <div class="tab-view" id="plan-remediation">
+    <div class="lightbox-trigger" onclick="openLightbox('plan-remed-svg','Fig. 06b — Remediation master plan, 2040')">
+      <svg id="plan-remed-svg" class="drawing" height="380" viewBox="0 0 600 380">
+        <rect width="600" height="380" fill="#040404" stroke="#1a1a1a" stroke-width="1"/>
+        <line x1="0" y1="76" x2="600" y2="76" stroke="#111" stroke-width="0.4"/><line x1="0" y1="152" x2="600" y2="152" stroke="#111" stroke-width="0.4"/><line x1="0" y1="228" x2="600" y2="228" stroke="#111" stroke-width="0.4"/><line x1="0" y1="304" x2="600" y2="304" stroke="#111" stroke-width="0.4"/>
+        <line x1="100" y1="0" x2="100" y2="380" stroke="#111" stroke-width="0.4"/><line x1="200" y1="0" x2="200" y2="380" stroke="#111" stroke-width="0.4"/><line x1="300" y1="0" x2="300" y2="380" stroke="#111" stroke-width="0.4"/><line x1="400" y1="0" x2="400" y2="380" stroke="#111" stroke-width="0.4"/><line x1="500" y1="0" x2="500" y2="380" stroke="#111" stroke-width="0.4"/>
+        <ellipse cx="180" cy="215" rx="136" ry="86" fill="#fff" opacity="0.03"/>
+        <ellipse cx="370" cy="178" rx="98" ry="68" fill="#fff" opacity="0.025"/>
+        <!-- planting dots -->
+        <circle cx="138" cy="197" r="4" fill="#fff" opacity="0.2"/><circle cx="158" cy="213" r="3" fill="#fff" opacity="0.2"/><circle cx="174" cy="193" r="5" fill="#fff" opacity="0.2"/><circle cx="198" cy="222" r="4" fill="#fff" opacity="0.2"/><circle cx="218" cy="203" r="3" fill="#fff" opacity="0.2"/><circle cx="154" cy="237" r="4" fill="#fff" opacity="0.2"/>
+        <!-- Devices -->
+        <rect x="116" y="155" width="38" height="26" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <text x="135" y="171" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#aaa">D1</text>
+        <rect x="172" y="150" width="52" height="32" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <text x="198" y="169" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#aaa">D2</text>
+        <rect x="335" y="133" width="82" height="48" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <text x="376" y="160" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#aaa">MONITOR</text>
+        <!-- Wells -->
+        <circle cx="98" cy="258" r="3" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <circle cx="238" cy="253" r="3" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <circle cx="308" cy="228" r="3" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="0" y1="268" x2="600" y2="268" stroke="#fff" stroke-width="0.6" opacity="0.12"/>
+        <text x="8" y="374" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#444" letter-spacing="0.5">N↑ · 1:2000 · REMEDIATION 2040</text>
+      </svg>
+    </div>
+    <p style="margin-top: 16px;">Active remediation strategy combines phytoremediation planting, monitored natural attenuation, and purpose-built monitoring devices. Public access introduced along eastern edge.</p>
+  </div>
+
+  <div class="tab-view" id="plan-2066">
+    <div class="lightbox-trigger" onclick="openLightbox('plan-2066-svg','Fig. 06c — 2066 master plan')">
+      <svg id="plan-2066-svg" class="drawing" height="380" viewBox="0 0 600 380">
+        <rect width="600" height="380" fill="#040404" stroke="#1a1a1a" stroke-width="1"/>
+        <line x1="0" y1="76" x2="600" y2="76" stroke="#111" stroke-width="0.4"/><line x1="0" y1="152" x2="600" y2="152" stroke="#111" stroke-width="0.4"/><line x1="0" y1="228" x2="600" y2="228" stroke="#111" stroke-width="0.4"/><line x1="0" y1="304" x2="600" y2="304" stroke="#111" stroke-width="0.4"/>
+        <line x1="100" y1="0" x2="100" y2="380" stroke="#111" stroke-width="0.4"/><line x1="200" y1="0" x2="200" y2="380" stroke="#111" stroke-width="0.4"/><line x1="300" y1="0" x2="300" y2="380" stroke="#111" stroke-width="0.4"/><line x1="400" y1="0" x2="400" y2="380" stroke="#111" stroke-width="0.4"/><line x1="500" y1="0" x2="500" y2="380" stroke="#111" stroke-width="0.4"/>
+        <ellipse cx="200" cy="215" rx="158" ry="98" fill="#fff" opacity="0.025"/>
+        <ellipse cx="418" cy="188" rx="128" ry="88" fill="#fff" opacity="0.02"/>
+        <!-- Dense planting -->
+        <circle cx="98" cy="198" r="6" fill="#fff" opacity="0.12"/><circle cx="128" cy="218" r="8" fill="#fff" opacity="0.12"/><circle cx="158" cy="194" r="7" fill="#fff" opacity="0.12"/><circle cx="184" cy="213" r="9" fill="#fff" opacity="0.12"/><circle cx="218" cy="198" r="6" fill="#fff" opacity="0.12"/><circle cx="248" cy="218" r="7" fill="#fff" opacity="0.12"/>
+        <circle cx="398" cy="178" r="8" fill="#fff" opacity="0.12"/><circle cx="428" cy="198" r="6" fill="#fff" opacity="0.12"/><circle cx="458" cy="183" r="9" fill="#fff" opacity="0.12"/><circle cx="488" cy="203" r="7" fill="#fff" opacity="0.12"/>
+        <!-- Program -->
+        <rect x="113" y="146" width="52" height="36" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <text x="139" y="168" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#aaa">RESEARCH</text>
+        <rect x="333" y="132" width="92" height="56" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <text x="379" y="163" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#aaa">PUBLIC PAVILION</text>
+        <!-- Paths -->
+        <path d="M58 328 Q148 288 248 268 Q358 248 478 278 Q538 293 578 308" stroke="#fff" stroke-width="1.2" fill="none" opacity="0.25"/>
+        <path d="M168 378 Q188 298 198 218 Q208 138 213 58" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.18"/>
+        <text x="8" y="374" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#444" letter-spacing="0.5">N↑ · 1:2000 · 2066 MASTER PLAN</text>
+      </svg>
+    </div>
+    <p style="margin-top: 16px;">By 2066 the site operates as a hybrid research landscape and public park. The monitoring devices have become architectural destinations.</p>
+  </div>
+</section>
+
+<!-- ══════════════ ARCHITECTURE ══════════════ -->
+<section id="architecture" class="fade-in">
+  <div class="section-label">Architecture &amp; Devices</div>
+  <h2>New Agency: The Research Laboratory</h2>
+  <p>The former refinery office redesigned as a public-facing research institution. Click each device below to compare program and section.</p>
+
+  <!-- Floor plan with hotspots -->
+  <div class="floorplan-wrap">
+    <div class="lightbox-trigger" onclick="openLightbox('floorplan-svg','Fig. 07 — Ground floor plan, research laboratory')">
+      <svg id="floorplan-svg" class="drawing" height="360" viewBox="0 0 600 360" style="margin-bottom:0">
+        <rect width="600" height="360" fill="#040404"/>
+        <!-- Outer -->
+        <rect x="58" y="56" width="484" height="264" fill="none" stroke="#fff" stroke-width="1.2"/>
+        <!-- Walls -->
+        <line x1="198" y1="56" x2="198" y2="218" stroke="#fff" stroke-width="0.9"/>
+        <line x1="198" y1="238" x2="198" y2="320" stroke="#fff" stroke-width="0.9"/>
+        <line x1="358" y1="56" x2="358" y2="158" stroke="#fff" stroke-width="0.9"/>
+        <line x1="358" y1="188" x2="358" y2="320" stroke="#fff" stroke-width="0.9"/>
+        <line x1="198" y1="168" x2="358" y2="168" stroke="#fff" stroke-width="0.9"/>
+        <line x1="58" y1="198" x2="198" y2="198" stroke="#fff" stroke-width="0.9"/>
+        <!-- Doors -->
+        <path d="M198 218 Q218 218 218 238" fill="none" stroke="#fff" stroke-width="0.6"/>
+        <path d="M58 198 Q58 178 78 178" fill="none" stroke="#fff" stroke-width="0.6"/>
+        <!-- Room labels -->
+        <text x="128" y="132" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">PUBLIC GALLERY</text>
+        <text x="128" y="263" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">ENTRY</text>
+        <text x="278" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">RESEARCH STUDIO</text>
+        <text x="278" y="248" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">DATA LAB</text>
+        <text x="449" y="188" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="7" fill="#555" letter-spacing="0.5">MONITORING</text>
+        <!-- Scale bar -->
+        <line x1="78" y1="342" x2="178" y2="342" stroke="#fff" stroke-width="0.8"/><line x1="78" y1="337" x2="78" y2="347" stroke="#fff" stroke-width="0.8"/><line x1="128" y1="337" x2="128" y2="347" stroke="#fff" stroke-width="0.8"/><line x1="178" y1="337" x2="178" y2="347" stroke="#fff" stroke-width="0.8"/>
+        <text x="78" y="356" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#444">0</text>
+        <text x="120" y="356" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#444">10m</text>
+        <text x="170" y="356" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#444">20m</text>
+        <!-- North -->
+        <line x1="553" y1="310" x2="553" y2="290" stroke="#fff" stroke-width="0.8"/><polyline points="549,296 553,288 557,296" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <text x="553" y="324" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#444">N</text>
+      </svg>
+    </div>
+    <div class="hotspot" style="top:95px;left:100px">A<div class="hotspot-tooltip">Public Gallery — contamination display</div></div>
+    <div class="hotspot" style="top:88px;left:230px">B<div class="hotspot-tooltip">Research Studio — 12 workstations</div></div>
+    <div class="hotspot" style="top:168px;left:400px">C<div class="hotspot-tooltip">Monitoring — live soil sensor feed</div></div>
+  </div>
+  <div class="drawing-caption">Fig. 07 — Ground floor plan · tap hotspots · tap to enlarge</div>
+
+  <!-- Device comparison -->
+  <h2 style="margin-top:48px;">Remediation Devices</h2>
+  <p>Select any device to compare its section drawing and program description.</p>
+
+  <div class="device-compare" id="device-compare">
+    <div class="device-compare-item selected" onclick="selectDevice(this,0)">
+      <svg width="100%" height="160" viewBox="0 0 220 160">
+        <line x1="110" y1="148" x2="110" y2="18" stroke="#fff" stroke-width="1.2"/>
+        <rect x="92" y="56" width="36" height="56" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <circle cx="80" cy="76" r="4" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="80" y1="76" x2="92" y2="76" stroke="#fff" stroke-width="0.5"/>
+        <circle cx="140" cy="95" r="4" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="130" y1="95" x2="140" y2="95" stroke="#fff" stroke-width="0.5"/>
+        <line x1="110" y1="148" x2="110" y2="162" stroke="#fff" stroke-width="0.8" stroke-dasharray="3 2"/>
+        <line x1="50" y1="148" x2="170" y2="148" stroke="#fff" stroke-width="0.9"/>
+        <path d="M100 68 Q72 46 48 26" stroke="#fff" stroke-width="0.4" stroke-dasharray="3 3" fill="none" opacity="0.35" class="pipe-flow-slow"/>
+      </svg>
+      <div class="device-label">01 — Monitoring Tower</div>
+    </div>
+    <div class="device-compare-item" onclick="selectDevice(this,1)">
+      <svg width="100%" height="160" viewBox="0 0 220 160">
+        <rect x="55" y="76" width="110" height="72" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <path d="M55 76 L110 36 L165 76" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <line x1="82" y1="62" x2="82" y2="148" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="110" y1="36" x2="110" y2="148" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="138" y1="62" x2="138" y2="148" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="73" y1="148" x2="73" y2="120" stroke="#fff" stroke-width="0.9"/>
+        <ellipse cx="73" cy="117" rx="8" ry="6" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="108" y1="148" x2="108" y2="115" stroke="#fff" stroke-width="0.9"/>
+        <ellipse cx="108" cy="111" rx="9" ry="7" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="143" y1="148" x2="143" y2="118" stroke="#fff" stroke-width="0.9"/>
+        <ellipse cx="143" cy="114" rx="8" ry="6" fill="none" stroke="#fff" stroke-width="0.7"/>
+        <line x1="30" y1="148" x2="190" y2="148" stroke="#fff" stroke-width="0.9"/>
+      </svg>
+      <div class="device-label">02 — Phytoremediation Greenhouse</div>
+    </div>
+    <div class="device-compare-item" onclick="selectDevice(this,2)">
+      <svg width="100%" height="160" viewBox="0 0 220 160">
+        <rect x="65" y="114" width="90" height="34" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <rect x="103" y="56" width="14" height="58" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <rect x="43" y="47" width="134" height="10" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <line x1="43" y1="47" x2="43" y2="30" stroke="#fff" stroke-width="0.7"/>
+        <line x1="177" y1="47" x2="177" y2="30" stroke="#fff" stroke-width="0.7"/>
+        <line x1="43" y1="30" x2="177" y2="30" stroke="#fff" stroke-width="0.8"/>
+        <line x1="73" y1="47" x2="73" y2="30" stroke="#fff" stroke-width="0.4" opacity="0.5"/>
+        <line x1="103" y1="47" x2="103" y2="30" stroke="#fff" stroke-width="0.4" opacity="0.5"/>
+        <line x1="133" y1="47" x2="133" y2="30" stroke="#fff" stroke-width="0.4" opacity="0.5"/>
+        <line x1="163" y1="47" x2="163" y2="30" stroke="#fff" stroke-width="0.4" opacity="0.5"/>
+        <line x1="25" y1="148" x2="195" y2="148" stroke="#fff" stroke-width="0.9"/>
+        <line x1="110" y1="30" x2="40" y2="148" stroke="#fff" stroke-width="0.3" stroke-dasharray="4 4" opacity="0.2"/>
+        <line x1="110" y1="30" x2="180" y2="148" stroke="#fff" stroke-width="0.3" stroke-dasharray="4 4" opacity="0.2"/>
+      </svg>
+      <div class="device-label">03 — Observation Deck</div>
+    </div>
+    <div class="device-compare-item" onclick="selectDevice(this,3)">
+      <svg width="100%" height="160" viewBox="0 0 220 160">
+        <rect x="73" y="75" width="74" height="28" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <line x1="73" y1="75" x2="35" y2="50" stroke="#fff" stroke-width="0.7"/>
+        <line x1="147" y1="75" x2="185" y2="50" stroke="#fff" stroke-width="0.7"/>
+        <line x1="35" y1="50" x2="185" y2="50" stroke="#fff" stroke-width="0.8"/>
+        <text x="110" y="93" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#777">PAVILION</text>
+        <line x1="30" y1="103" x2="190" y2="103" stroke="#fff" stroke-width="0.9"/>
+        <rect x="38" y="103" width="144" height="16" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <text x="110" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#555">RESIN CAP</text>
+        <rect x="38" y="119" width="144" height="13" fill="#fff" opacity="0.03" stroke="#fff" stroke-width="0.3"/>
+        <text x="110" y="130" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#555">CONTAMINATED LAYER</text>
+        <rect x="38" y="132" width="144" height="16" fill="#fff" opacity="0.02" stroke="#fff" stroke-width="0.3"/>
+        <text x="110" y="143" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#444">SUBGRADE</text>
+      </svg>
+      <div class="device-label">04 — Capped Ground Pavilion</div>
+    </div>
+  </div>
+
+  <div class="device-detail-panel open" id="device-detail">
+    <div>
+      <svg width="100%" height="200" viewBox="0 0 260 200" id="device-detail-svg">
+        <!-- Device 01 detail -->
+        <line x1="130" y1="185" x2="130" y2="18" stroke="#fff" stroke-width="1.4"/>
+        <rect x="108" y="62" width="44" height="68" fill="none" stroke="#fff" stroke-width="1"/>
+        <circle cx="94" cy="84" r="5" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <line x1="94" y1="84" x2="108" y2="84" stroke="#fff" stroke-width="0.7"/>
+        <circle cx="166" cy="110" r="5" fill="none" stroke="#fff" stroke-width="0.9"/>
+        <line x1="152" y1="110" x2="166" y2="110" stroke="#fff" stroke-width="0.7"/>
+        <line x1="130" y1="185" x2="130" y2="200" stroke="#fff" stroke-width="1" stroke-dasharray="3 2"/>
+        <line x1="60" y1="185" x2="200" y2="185" stroke="#fff" stroke-width="1.1"/>
+        <path d="M118 74 Q84 52 58 32" stroke="#fff" stroke-width="0.5" stroke-dasharray="3 3" fill="none" opacity="0.35" class="pipe-flow-slow"/>
+        <text x="130" y="14" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#555" letter-spacing="0.5">SECTION A–A'</text>
+      </svg>
+    </div>
+    <div id="device-detail-text">
+      <h3>Monitoring Tower</h3>
+      <p>A slender vertical instrument embedded at the primary contamination zone. Subsurface probes transmit soil and groundwater data to the public display above. The tower is both infrastructure and marker — visible from the road, its presence signals the invisible condition below.</p>
+      <p style="margin-top:12px; font-family:'IBM Plex Mono',monospace; font-size:9px; color:#555; letter-spacing:0.1em; text-transform:uppercase;">Height 22m · Probe depth 18m · 6 sensor nodes</p>
+    </div>
+  </div>
+  <div class="drawing-caption">Fig. 08 — Device sections · click to compare</div>
+</section>
+
+<!-- ══════════════ FABRICATION ══════════════ -->
+<section id="fabrication" class="fade-in">
+  <div class="section-label">Models &amp; Fabrication</div>
+  <h2>Physical Production</h2>
+  <p>Three physical models developed in parallel with the drawings. Each operates at a different scale and material register.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#1a1a1a;border:1px solid #1a1a1a;margin:32px 0">
+    <div style="background:#000;padding:24px 18px">
+      <svg width="100%" height="140" viewBox="0 0 160 140">
+        <!-- Site model plan view -->
+        <rect x="10" y="10" width="140" height="120" fill="none" stroke="#333" stroke-width="0.8"/>
+        <rect x="20" y="20" width="50" height="35" fill="#fff" opacity="0.06" stroke="#fff" stroke-width="0.4"/>
+        <rect x="80" y="25" width="60" height="45" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <rect x="25" y="70" width="35" height="50" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <ellipse cx="105" cy="95" rx="28" ry="22" fill="#fff" opacity="0.03" stroke="#fff" stroke-width="0.4"/>
+        <circle cx="40" cy="90" r="4" fill="#fff" opacity="0.15"/>
+        <circle cx="55" cy="78" r="3" fill="#fff" opacity="0.15"/>
+        <circle cx="130" cy="75" r="5" fill="#fff" opacity="0.15"/>
+        <circle cx="145" cy="90" r="4" fill="#fff" opacity="0.15"/>
+      </svg>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:10px;line-height:1.6">1' × 2' Site Model<br><span style="color:#333">Chipboard + resin base</span></div>
+    </div>
+    <div style="background:#000;padding:24px 18px">
+      <svg width="100%" height="140" viewBox="0 0 160 140">
+        <!-- Building model elevation -->
+        <rect x="20" y="40" width="120" height="80" fill="none" stroke="#fff" stroke-width="0.8"/>
+        <line x1="50" y1="40" x2="50" y2="120" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="80" y1="40" x2="80" y2="120" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <line x1="110" y1="40" x2="110" y2="120" stroke="#fff" stroke-width="0.4" opacity="0.4"/>
+        <rect x="26" y="52" width="18" height="26" fill="#fff" opacity="0.06"/>
+        <rect x="56" y="52" width="18" height="26" fill="#fff" opacity="0.06"/>
+        <rect x="86" y="52" width="18" height="26" fill="#fff" opacity="0.06"/>
+        <rect x="116" y="52" width="18" height="26" fill="#fff" opacity="0.06"/>
+        <line x1="10" y1="120" x2="150" y2="120" stroke="#333" stroke-width="0.8"/>
+      </svg>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:10px;line-height:1.6">Detailed Building<br><span style="color:#333">3-D printed + laser cut</span></div>
+    </div>
+    <div style="background:#000;padding:24px 18px">
+      <svg width="100%" height="140" viewBox="0 0 160 140">
+        <!-- Resin base section -->
+        <rect x="15" y="60" width="130" height="20" fill="#fff" opacity="0.06" stroke="#fff" stroke-width="0.5"/>
+        <text x="80" y="74" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#555">RESIN CAP</text>
+        <rect x="15" y="80" width="130" height="16" fill="#fff" opacity="0.04" stroke="#fff" stroke-width="0.3"/>
+        <text x="80" y="91" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#444">CONTAM. LAYER</text>
+        <rect x="15" y="96" width="130" height="18" fill="#fff" opacity="0.02" stroke="#fff" stroke-width="0.3"/>
+        <text x="80" y="108" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#333">SUBGRADE</text>
+        <!-- Drip forms -->
+        <ellipse cx="48" cy="58" rx="6" ry="8" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <ellipse cx="80" cy="56" rx="8" ry="10" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <ellipse cx="114" cy="59" rx="5" ry="7" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.4"/>
+        <line x1="5" y1="60" x2="155" y2="60" stroke="#333" stroke-width="0.6"/>
+      </svg>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:10px;line-height:1.6">Resin-Cast Base<br><span style="color:#333">Capped contamination</span></div>
+    </div>
+  </div>
+  <div class="drawing-caption">Fig. 09 — Physical model studies</div>
+</section>
+
+<!-- ══════════════ TIMELINE ══════════════ -->
+<section id="timeline" class="fade-in">
+  <div class="section-label">Timeline</div>
+  <h2>From Extraction to Stewardship</h2>
+  <p>A forty-year chronicle of industrial decline and ecological recovery.</p>
+
+  <div class="timeline" id="timeline-list">
+    <div class="timeline-item"><div class="timeline-year">1952</div><div class="timeline-event">Refinery established on site. First crude oil processed. Workforce reaches 600.</div></div>
+    <div class="timeline-item"><div class="timeline-year">1978</div><div class="timeline-event">Expansion of cracking units. Peak production. First documented groundwater contamination reports suppressed.</div></div>
+    <div class="timeline-item"><div class="timeline-year">2003</div><div class="timeline-event">Partial decommissioning begins. Regulatory pressure mounts. First public contamination disclosure.</div></div>
+    <div class="timeline-item now"><div class="timeline-year">2026 — Now</div><div class="timeline-event">Full decommissioning. Site enters regulatory consideration. This project begins: a new framework for what comes next.</div></div>
+    <div class="timeline-item"><div class="timeline-year">2030</div><div class="timeline-event">Remediation devices installed. Research laboratory opens. First public tours of the former refinery.</div></div>
+    <div class="timeline-item"><div class="timeline-year">2040</div><div class="timeline-event">Phytoremediation reaches 60% of target zones. Data from monitoring towers published as open dataset.</div></div>
+    <div class="timeline-item"><div class="timeline-year">2066</div><div class="timeline-event">Contamination plume stabilized. Site operates as a public landscape and research destination.</div></div>
+  </div>
+
+  <div class="meta" style="border-top:1px solid #1a1a1a;padding-top:32px;margin-top:48px;">
+    Nabil Davidson &amp; Zirui<br>
+    Oil Refinery Remediation Studio · Final Review 2026
+  </div>
+</section>
+
+</main>
+
+<script>
+// ── NAV ACTIVE ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const l = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (l) l.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 }).observe(document.querySelectorAll('section[id]')[0]);
+sections.forEach(s => new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { navLinks.forEach(l => l.classList.remove('active')); const l = document.querySelector(`.nav-links a[href="#${e.target.id}"]`); if (l) l.classList.add('active'); }});
+}, { threshold: 0.3 }).observe(s));
+
+// ── FADE IN ──
+const fadeObs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
+
+// ── TIMELINE REVEAL ──
+const tlObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { document.querySelectorAll('.timeline-item').forEach((item, i) => setTimeout(() => item.classList.add('visible'), i * 110)); }});
+}, { threshold: 0.1 });
+const tl = document.getElementById('timeline-list');
+if (tl) tlObs.observe(tl);
+
+// ── SCROLL-DRAW ──
+const drawObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.querySelectorAll('.draw-path').forEach(p => p.classList.add('drawn')); });
+}, { threshold: 0.2 });
+document.querySelectorAll('svg').forEach(s => drawObs.observe(s));
+
+// ── CONTAMINATION SPREAD ──
+const contamObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      [['cz1',138,86],['cz2',98,68],['cz3',78,50]].forEach(([id,rx,ry], i) => {
+        const el = document.getElementById(id);
+        if (el) setTimeout(() => {
+          el.setAttribute('rx', rx); el.setAttribute('ry', ry); el.style.opacity = '0.09';
+          el.style.transition = `rx 1.5s ease-out ${i*0.4}s, ry 1.5s ease-out ${i*0.4}s, opacity 0.5s ease ${i*0.4}s`;
+        }, i * 400);
+      });
+    }
+  });
+}, { threshold: 0.2 });
+const pc = document.getElementById('plan-contam-svg');
+if (pc) contamObs.observe(pc);
+
+// ── TABS ──
+function switchTab(btn, group, targetId) {
+  document.querySelectorAll(`[id^="${group}-"]`).forEach(el => el.classList.remove('active'));
+  btn.closest('.toggle-row').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CATALOGUE EXPAND ──
+function toggleCatalogue(el) {
+  const wasExpanded = el.classList.contains('expanded');
+  document.querySelectorAll('.catalogue-item').forEach(i => i.classList.remove('expanded'));
+  if (!wasExpanded) el.classList.add('expanded');
+}
+
+// ── LIGHTBOX ──
+function openLightbox(svgId, caption) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const clone = svg.cloneNode(true);
+  clone.style.cssText = 'width:85vw;height:auto;max-height:85vh';
+  document.getElementById('lightbox-content').innerHTML = '';
+  document.getElementById('lightbox-content').appendChild(clone);
+  document.getElementById('lightbox-caption').textContent = caption || '';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
+
+// ── DEVICE COMPARE ──
+const deviceDetails = [
+  {
+    svg: `<line x1="130" y1="185" x2="130" y2="18" stroke="#fff" stroke-width="1.4"/><rect x="108" y="62" width="44" height="68" fill="none" stroke="#fff" stroke-width="1"/><circle cx="94" cy="84" r="5" fill="none" stroke="#fff" stroke-width="0.9"/><line x1="94" y1="84" x2="108" y2="84" stroke="#fff" stroke-width="0.7"/><circle cx="166" cy="110" r="5" fill="none" stroke="#fff" stroke-width="0.9"/><line x1="152" y1="110" x2="166" y2="110" stroke="#fff" stroke-width="0.7"/><line x1="130" y1="185" x2="130" y2="200" stroke="#fff" stroke-width="1" stroke-dasharray="3 2"/><line x1="60" y1="185" x2="200" y2="185" stroke="#fff" stroke-width="1.1"/><text x="130" y="14" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#555" letter-spacing="0.5">SECTION A–A'</text>`,
+    title: 'Monitoring Tower',
+    body: 'A slender vertical instrument embedded at the primary contamination zone. Subsurface probes transmit soil and groundwater data to the public display above. The tower is both infrastructure and marker — its presence signals the invisible condition below.',
+    spec: 'Height 22m · Probe depth 18m · 6 sensor nodes'
+  },
+  {
+    svg: `<rect x="45" y="72" width="170" height="100" fill="none" stroke="#fff" stroke-width="1"/><path d="M45 72 L130 28 L215 72" fill="none" stroke="#fff" stroke-width="1"/><line x1="85" y1="54" x2="85" y2="172" stroke="#fff" stroke-width="0.4" opacity="0.4"/><line x1="130" y1="28" x2="130" y2="172" stroke="#fff" stroke-width="0.4" opacity="0.4"/><line x1="175" y1="54" x2="175" y2="172" stroke="#fff" stroke-width="0.4" opacity="0.4"/><line x1="65" y1="172" x2="65" y2="142" stroke="#fff" stroke-width="1"/><ellipse cx="65" cy="138" rx="10" ry="7" fill="none" stroke="#fff" stroke-width="0.8"/><line x1="130" y1="172" x2="130" y2="136" stroke="#fff" stroke-width="1"/><ellipse cx="130" cy="131" rx="12" ry="9" fill="none" stroke="#fff" stroke-width="0.8"/><line x1="195" y1="172" x2="195" y2="140" stroke="#fff" stroke-width="1"/><ellipse cx="195" cy="136" rx="10" ry="7" fill="none" stroke="#fff" stroke-width="0.8"/><line x1="20" y1="172" x2="240" y2="172" stroke="#fff" stroke-width="1.1"/><text x="130" y="18" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#555" letter-spacing="0.5">SECTION B–B'</text>`,
+    title: 'Phytoremediation Greenhouse',
+    body: 'A glass and steel structure housing a controlled phytoremediation field. Hyperaccumulator plants draw heavy metals and hydrocarbons from imported contaminated soil. The interior is publicly accessible — visitors walk through the active process.',
+    spec: 'Footprint 40 × 18m · 3 plant species · soil turnover 6-month cycle'
+  },
+  {
+    svg: `<rect x="53" y="92" width="154" height="78" fill="none" stroke="#fff" stroke-width="1"/><rect x="107" y="38" width="46" height="54" fill="none" stroke="#fff" stroke-width="1"/><rect x="33" y="28" width="194" height="12" fill="none" stroke="#fff" stroke-width="1"/><line x1="33" y1="28" x2="33" y2="16" stroke="#fff" stroke-width="0.8"/><line x1="227" y1="28" x2="227" y2="16" stroke="#fff" stroke-width="0.8"/><line x1="33" y1="16" x2="227" y2="16" stroke="#fff" stroke-width="1"/><line x1="73" y1="28" x2="73" y2="16" stroke="#fff" stroke-width="0.4" opacity="0.5"/><line x1="113" y1="28" x2="113" y2="16" stroke="#fff" stroke-width="0.4" opacity="0.5"/><line x1="153" y1="28" x2="153" y2="16" stroke="#fff" stroke-width="0.4" opacity="0.5"/><line x1="193" y1="28" x2="193" y2="16" stroke="#fff" stroke-width="0.4" opacity="0.5"/><line x1="15" y1="170" x2="245" y2="170" stroke="#fff" stroke-width="1.1"/><text x="130" y="10" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#555" letter-spacing="0.5">SECTION C–C'</text>`,
+    title: 'Observation Deck',
+    body: 'Elevated 8m above grade, the deck offers an unobstructed view across the contamination landscape. The view frame is calibrated to align the monitoring towers, the resin base pavilion, and the 2066 planting zone on a single sightline.',
+    spec: 'Elevation +8.0m · Platform 24 × 5m · Steel frame'
+  },
+  {
+    svg: `<rect x="35" y="60" width="190" height="24" fill="#fff" opacity="0.06" stroke="#fff" stroke-width="0.8"/><text x="130" y="76" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#888">PAVILION FLOOR</text><line x1="20" y1="84" x2="240" y2="84" stroke="#fff" stroke-width="1.1"/><rect x="35" y="84" width="190" height="18" fill="#fff" opacity="0.05" stroke="#fff" stroke-width="0.6"/><text x="130" y="96" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#666">RESIN CAP 200mm</text><rect x="35" y="102" width="190" height="22" fill="#fff" opacity="0.03" stroke="#fff" stroke-width="0.4"/><text x="130" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#555">CONTAMINATED ZONE (CAPPED)</text><rect x="35" y="124" width="190" height="20" fill="#fff" opacity="0.02" stroke="#fff" stroke-width="0.3"/><text x="130" y="137" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5" fill="#444">SUBGRADE</text><line x1="35" y1="60" x2="35" y2="40" stroke="#fff" stroke-width="0.7"/><line x1="225" y1="60" x2="225" y2="40" stroke="#fff" stroke-width="0.7"/><line x1="35" y1="40" x2="225" y2="40" stroke="#fff" stroke-width="0.8"/><text x="130" y="10" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="6" fill="#555" letter-spacing="0.5">SECTION D–D'</text>`,
+    title: 'Capped Ground Pavilion',
+    body: 'A structure built directly atop a capped contamination zone. The resin base is exposed as the pavilion floor — amber and translucent, the sealed toxicity is visible underfoot. The pavilion frames the most contaminated part of the site as its central public space.',
+    spec: 'Footprint 28 × 14m · Resin cap 200mm · Public access'
+  }
+];
+
+function selectDevice(el, idx) {
+  document.querySelectorAll('.device-compare-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  const d = deviceDetails[idx];
+  const panel = document.getElementById('device-detail');
+  const svgEl = document.getElementById('device-detail-svg');
+  svgEl.innerHTML = d.svg;
+  document.getElementById('device-detail-text').innerHTML = `<h3>${d.title}</h3><p>${d.body}</p><p style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#555;letter-spacing:0.1em;text-transform:uppercase">${d.spec}</p>`;
+  panel.classList.add('open');
+}
+
+// ── BEFORE/AFTER SLIDER ──
+const sliderEl = document.getElementById('slider');
+const afterEl = sliderEl && sliderEl.querySelector('.slider-after');
+const dividerEl = document.getElementById('divider');
+const handleEl = document.getElementById('handle');
+let dragging = false;
+
+function setSlider(x) {
+  const rect = sliderEl.getBoundingClientRect();
+  let pct = Math.min(Math.max((x - rect.left) / rect.width, 0.02), 0.98);
+  afterEl.style.clipPath = `inset(0 ${(100 - pct*100).toFixed(1)}% 0 0)`;
+  dividerEl.style.left = handleEl.style.left = (pct*100).toFixed(1) + '%';
+}
+
+if (sliderEl) {
+  sliderEl.addEventListener('mousedown', e => { dragging = true; setSlider(e.clientX); });
+  window.addEventListener('mousemove', e => { if (dragging) setSlider(e.clientX); });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  sliderEl.addEventListener('touchstart', e => { dragging = true; setSlider(e.touches[0].clientX); }, {passive:true});
+  window.addEventListener('touchmove', e => { if (dragging) setSlider(e.touches[0].clientX); }, {passive:true});
+  window.addEventListener('touchend', () => { dragging = false; });
+}
+</script>
+</body>
+</html>
